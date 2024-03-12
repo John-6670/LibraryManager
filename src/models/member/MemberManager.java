@@ -3,18 +3,106 @@ package models.member;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MemberManager {
+import models.console.Output;
+import models.menu.Menu;
+
+public class MemberManager extends Menu{
     private static ArrayList<Member> members; // Create an ArrayList to hold members
     private static final Scanner scan = new Scanner(System.in);
 
-    // Constructor
     public MemberManager() {
-        members = new ArrayList<>();
+        members = new ArrayList<>(); // Initialize the ArrayList
+        menuItems = new String[] {
+            "Add Member",
+            "Update Member",
+            "Delete Member",
+            "Display Member Details",
+            "Search Member by Name",
+            "Search Member by ID",
+            "Display all Members",
+            "Go back"
+        };
+    }
+
+    // Method to start the member manager
+    public void start() {
+        boolean isRunning = true;
+
+        while (isRunning) {
+            Output.printMenu("Member Manager", menuItems); // Display the menu
+            int choice = scan.nextInt();
+            Output.clearScreen();
+
+            switch (choice) {
+                case 1:
+                    addMember();
+                    break;
+                case 2:
+                    System.out.print("Enter member ID: ");
+                    String memberID = scan.next();
+                    try {
+                        updateMember(Integer.parseInt(memberID));
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid member ID");
+                    }
+                    break;
+                case 3:
+                    System.out.print("Enter member ID: ");
+                    memberID = scan.next();
+                    try {
+                        members.removeIf(member -> member.getMemberID() == Integer.parseInt(memberID));
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid member ID");
+                    }
+                    break;
+                case 4:
+                    System.out.print("Enter member ID: ");
+                    memberID = scan.next();
+                    try {
+                        displayMemberDetails(Integer.parseInt(memberID));
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid member ID");
+                    }
+                    break;
+                case 5:
+                    System.out.print("Enter member name: ");
+                    scan.nextLine(); // Consume the newline character
+                    String name = scan.nextLine();
+                    searchMemberByName(name);
+                    break;
+                case 6:
+                    displayAllMembers();
+                    break;
+                case 7:
+                    isRunning = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice");
+            }
+
+            Output.pause();
+            Output.clearScreen();
+        }
     }
 
     // Method to create a member
-    public void addMember(String name, Byte age, Character gender) {
-        Member member = new Member(name, age, gender);
+    public void addMember() {
+        System.out.print("Enter member name: ");
+        scan.nextLine(); // Consume the newline character
+        String name = scan.nextLine(); // Read the member name
+        System.out.print("Enter member age (or press Enter to skip): ");
+        String ageInput = scan.nextLine(); // Read the member age
+        System.out.println("Enter member gender (M for Male, F for Female) (or press Enter to skip): ");
+        String genderInput = scan.nextLine(); // Read the
+
+        if (name.isEmpty()) {
+            System.err.println("Name cannot be empty");
+            return;
+        }
+        byte age = ageInput.isEmpty() ? 0 : Byte.parseByte(ageInput);
+        char gender = genderInput.isEmpty() ? 'U' : genderInput.toUpperCase().charAt(0);
+
+        Member member = new Member(name, age, gender); // Create a new member
 
         System.out.println("Member created successfully");
         System.out.println("Member ID: " + member.getMemberID());
@@ -30,7 +118,7 @@ public class MemberManager {
             return;
         }
 
-        System.out.println(member.getMemberDetails()); // Display the member details
+        System.out.println(member.toString()); // Display the member details
 
         System.out.print("Enter member name (or press Enter to skip): ");
         String name = scan.nextLine(); // Read the member name
@@ -47,19 +135,6 @@ public class MemberManager {
         }
     }
 
-    // Method to delete a member
-    public void deleteMember(int memberID) {
-        Member member = searchMemberByID(memberID); // Search for the member
-
-        if (member == null) {
-            System.err.println("Member not found");
-            return;
-        }
-
-        members.remove(member); // Remove the member from the ArrayList
-        System.out.println("Member deleted successfully");
-    }
-
     // Method to display a member's details
     public void displayMemberDetails(int memberID) {
         Member member = searchMemberByID(memberID); // Search for the member
@@ -69,7 +144,7 @@ public class MemberManager {
             return;
         }
 
-        System.out.println(member.getMemberDetails()); // Display the member details
+        System.out.println(member.toString()); // Display the member details
     }
 
     // Method to search a member by their name
@@ -87,7 +162,7 @@ public class MemberManager {
         } else {
             System.out.println("Search results:");
             for (Member member : searchResults) {
-                System.out.println(member.getMemberDetails() + "\nMember ID: " + member.getMemberID()); // Display the member details
+                System.out.println(member.toString() + "\nMember ID: " + member.getMemberID()); // Display the member details
             }
         }
     }
@@ -95,7 +170,7 @@ public class MemberManager {
     // Method to display all members at once
     public void displayAllMembers() {
         for (Member member : members) {
-            System.out.println(member.getMemberDetails() + "\nMember ID: " + member.getMemberID());
+            System.out.println(member.toString());
         }
     }
 

@@ -58,4 +58,9 @@ public class Book {
     public void setBorrower(Member borrower) {
         this.borrower = borrower;
     }
+
+    @Override
+    public String toString() {
+        return "Book ID: " + bookID + "\nTitle: " + title + "\nAuthor: " + author + "\nGenre: " + genre + "\nBorrow Status: " + borrowStatus + "\n";
+    }
 }

@@ -1,57 +1,95 @@
 package models.book;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
-public class BookManager {
-    private final ArrayList<Book> bookList = new ArrayList<>();
+import models.console.Output;
+import models.menu.Menu;
 
-    public void start(java.util.Scanner scanner) {
+public class BookManager extends Menu {
+    private final ArrayList<Book> bookList;
+    private static final Scanner scan = new Scanner(System.in);
+
+    public BookManager() {
+        bookList = new ArrayList<>();
+        menuItems = new String[] {
+            "Add Book",
+            "Display all books",
+            "Search book by title",
+            "Search book by author",
+            "Search book by genre",
+            "Search book by ID",
+            "Delete book",
+            "Exit"
+        };
+    }
+
+    public void start() {
         boolean isRunning = true;
         while (isRunning) {
-            System.out.println("1. Add Book");
-            System.out.println("2. Display all books");
-            System.out.println("3. Search book by title");
-            System.out.println("4. Search book by author");
-            System.out.println("5. Search book by ISBN");
-            System.out.println("6. Delete book");
-            System.out.println("7. Go back");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
+            Output.printMenu("Book Manager", menuItems);
+            int choice = scan.nextInt();
+            Output.clearScreen();
+
             switch (choice) {
                 case 1:
-                    addBook(scanner);
+                    addBook();
                     break;
+
                 case 2:
                     displayAllBooks();
                     break;
+
                 case 3:
-                    searchBookByTitle(scanner);
+                    System.out.print("Enter title: ");
+                    String title = scan.next();
+                    searchBookByTitle(title);
                     break;
+
                 case 4:
-                    searchBookByAuthor(scanner);
+                    System.out.print("Enter author: ");
+                    String author = scan.next();
+                    searchBookByAuthor(author);
                     break;
+
                 case 5:
-                    // searchBookByISBN(scanner);
+                    System.out.print("Enter genre: ");
+                    Genre genre = Genre.valueOf(scan.next().toUpperCase());
+                    searchBookByGenre(genre);
                     break;
+
                 case 6:
-                    // deleteBook(scanner);
+                    System.out.print("Enter ID: ");
+                    int id = scan.nextInt();
+                    searchBookByID(id);
                     break;
+
                 case 7:
+                    System.out.println("Enter ID: ");
+                    id = scan.nextInt();
+                    bookList.removeIf(book -> book.getBookID() == id);
+                    break;
+
+                case 8:
                     isRunning = false;
                     break;
+
                 default:
                     System.out.println("Invalid choice");
             }
+
+            Output.pause();
+            Output.clearScreen();
         }
     }
 
-    public void addBook(java.util.Scanner scanner) {
+    public void addBook() {
         System.out.print("Enter title: ");
-        String title = scanner.next();
+        String title = scan.next();
         System.out.print("Enter author: ");
-        String author = scanner.next();
+        String author = scan.next();
         System.out.print("Enter Genre: ");
-        Genre genre = Genre.valueOf(scanner.next().toUpperCase());
+        Genre genre = Genre.valueOf(scan.next().toUpperCase());
         Book book = new Book(title, author, genre);
         bookList.add(book);
     }
@@ -62,9 +100,7 @@ public class BookManager {
         }
     }
 
-    public void searchBookByTitle(java.util.Scanner scanner) {
-        System.out.print("Enter title: ");
-        String title = scanner.next();
+    public void searchBookByTitle(String title) {
         for (Book book : bookList) {
             if (book.getTitle().equals(title)) {
                 System.out.println(book);
@@ -72,11 +108,25 @@ public class BookManager {
         }
     }
 
-    public void searchBookByAuthor(java.util.Scanner scanner) {
-        System.out.print("Enter author: ");
-        String author = scanner.next();
+    public void searchBookByAuthor(String author) {
         for (Book book : bookList) {
             if (book.getAuthor().equals(author)) {
+                System.out.println(book);
+            }
+        }
+    }
+
+    public void searchBookByGenre(Genre genre) {
+        for (Book book : bookList) {
+            if (book.getGenre() == genre) {
+                System.out.println(book);
+            }
+        }
+    }
+
+    public void searchBookByID(int id) {
+        for (Book book : bookList) {
+            if (book.getBookID() == id) {
                 System.out.println(book);
             }
         }

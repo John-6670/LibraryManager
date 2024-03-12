@@ -10,7 +10,7 @@ public class Member {
     private String name;
     private byte age;
     private final char gender;
-    private final ArrayList<Book> bowrowedBooks = new ArrayList<>(); // ArrayList to hold the books borrowed by the member
+    private final ArrayList<Book> borrowedBooks = new ArrayList<>(); // ArrayList to hold the books borrowed by the member
 
     // Constructor
     public Member(String name, byte age, char gender) {
@@ -37,18 +37,13 @@ public class Member {
         return name;
     }
 
-    public String getMemberDetails() {
-        String genderString;
-        if (gender == 'M') {
-            genderString = "Male";
-        } else if (gender == 'F') {
-            genderString = "Female";
-        } else {
-            genderString = "Unknown";
-        }
-        
-        return "\nName: " + name + "\n" +
-            "Age: " + age + "\n" +
-            "Gender: " + genderString;
+    @Override
+    public String toString() {
+        return "Member {" +
+                "memberID =" + memberID +
+                ", name ='" + name + '\'' +
+                ", age =" + age + '\'' +
+                ", gender =" + gender + '\'' +
+                ", borrowedBooks =" + borrowedBooks.toString();
     }
 }

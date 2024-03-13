@@ -1,6 +1,7 @@
 package models.member;
 
 import models.book.Book;
+import models.book.BorrowStatus;
 
 import java.util.ArrayList;
 
@@ -40,10 +41,20 @@ public class Member {
     @Override
     public String toString() {
         return "Member {" +
-                "memberID =" + memberID +
-                ", name ='" + name + '\'' +
-                ", age =" + age + '\'' +
-                ", gender =" + gender + '\'' +
-                ", borrowedBooks =" + borrowedBooks.toString();
+                "memberID = " + memberID +
+                ", name = " + name + "' " +
+                ", age = " + age + ' ' +
+                ", gender = '" + gender + "' " +
+                ", borrowedBooks = " + borrowedBooks.toString();
+    }
+
+    public void borrowBook(Book book) {
+        book.setBorrower(this);
+        book.setBorrowStatus(BorrowStatus.BORROWED);
+    }
+
+    public void returnBook(Book book) {
+        book.setBorrower(null);
+        book.setBorrowStatus(BorrowStatus.AVAILABLE);
     }
 }

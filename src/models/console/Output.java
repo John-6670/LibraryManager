@@ -14,18 +14,12 @@ public class Output {
     }
 
     public static void clearScreen() {
-        for (int i = 0; i < 50; i++) {
-            System.out.println();
-        }
+        System.out.print("\033[H\033[2J"); // ANSI escape code to move the cursor to the home position (0,0)
+        System.out.flush(); // Flush the stream to ensure that the console is cleared immediately
     }
 
-    public static void pause() {
+    public static void pause(java.util.Scanner scan) {
         System.out.println("Press enter to continue...");
-        try {
-            System.in.skip(System.in.available());
-            System.in.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        scan.next();
     }
 }

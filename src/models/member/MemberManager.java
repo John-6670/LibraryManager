@@ -80,13 +80,13 @@ public class MemberManager extends Menu{
                     System.out.println("Invalid choice");
             }
 
-            Output.pause();
+            Output.pause(scan);
             Output.clearScreen();
         }
     }
 
     // Method to create a member
-    public void addMember() {
+    private void addMember() {
         System.out.print("Enter member name: ");
         scan.nextLine(); // Consume the newline character
         String name = scan.nextLine(); // Read the member name
@@ -110,7 +110,7 @@ public class MemberManager extends Menu{
     }
 
     // Method to update a member's details
-    public void updateMember(int memberID) {
+    private void updateMember(int memberID) {
         Member member = searchMemberByID(memberID); // Search for the member
         
         if (member == null) {
@@ -136,7 +136,7 @@ public class MemberManager extends Menu{
     }
 
     // Method to display a member's details
-    public void displayMemberDetails(int memberID) {
+    private void displayMemberDetails(int memberID) {
         Member member = searchMemberByID(memberID); // Search for the member
 
         if (member == null) {
@@ -148,7 +148,7 @@ public class MemberManager extends Menu{
     }
 
     // Method to search a member by their name
-    public void searchMemberByName(String name) {
+    private void searchMemberByName(String name) {
         ArrayList<Member> searchResults = new ArrayList<>(); // Create an ArrayList to hold search results
 
         for (Member member : members) {
@@ -168,14 +168,14 @@ public class MemberManager extends Menu{
     }
 
     // Method to display all members at once
-    public void displayAllMembers() {
+    private void displayAllMembers() {
         for (Member member : members) {
             System.out.println(member.toString());
         }
     }
 
     // Method to search a member by their ID
-    private Member searchMemberByID(int memberID) {
+    public Member searchMemberByID(int memberID) {
         // Initialize left and right pointers for binary search
         int left = 0;
         int right = members.size() - 1;

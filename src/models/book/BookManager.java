@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import models.console.Output;
+import models.member.Member;
 import models.menu.Menu;
 
 public class BookManager extends Menu {
@@ -78,7 +79,7 @@ public class BookManager extends Menu {
                     System.out.println("Invalid choice");
             }
 
-            Output.pause();
+            Output.pause(scan);
             Output.clearScreen();
         }
     }
@@ -124,11 +125,30 @@ public class BookManager extends Menu {
         }
     }
 
-    public void searchBookByID(int id) {
-        for (Book book : bookList) {
+    public Book searchBookByID(int id) {
+        // Initialize left and right pointers for binary search
+        int left = 0;
+        int right = bookList.size() - 1;
+
+        // While the search space is not exhausted
+        while (left <= right) {
+            int mid = left + (right - left) / 2; // Calculate the middle index
+            Book book = bookList.get(mid); // Get the book at the middle index
+
+            // If the book's ID matches the search ID, return the book
             if (book.getBookID() == id) {
-                System.out.println(book);
+                return book;
+            }
+
+            // If the book's ID is less than the search ID, discard the left half
+            if (book.getBookID() < id) {
+                left = mid + 1;
+            } else {
+                // Otherwise, discard the right half
+                right = mid - 1;
             }
         }
+
+        return null; // If the book is not found, return null
     }
 }

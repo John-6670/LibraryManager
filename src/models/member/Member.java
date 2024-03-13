@@ -40,12 +40,8 @@ public class Member {
 
     @Override
     public String toString() {
-        return "Member {" +
-                "memberID = " + memberID +
-                ", name = " + name + "' " +
-                ", age = " + age + ' ' +
-                ", gender = '" + gender + "' " +
-                ", borrowedBooks = " + borrowedBooks.toString();
+        return "Member { memberID: " + memberID + ", name: '" + name + "', " + "age: " + age + ", gender = '" + gender + "', " +
+                "borrowedBooks = " + borrowedBooks.toString();
     }
 
     public void borrowBook(Book book) {

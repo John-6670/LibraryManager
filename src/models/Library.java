@@ -52,6 +52,7 @@ public class Library extends Menu {
         String[] borrowMenuItems = new String[] {
                 "Borrow a book",
                 "Return a book",
+                "Renew borrow time",
                 "Go back"
         };
 
@@ -76,6 +77,8 @@ public class Library extends Menu {
                 }
                 break;
 
+            case 2:
+
         }
     }
 
@@ -85,6 +88,15 @@ public class Library extends Menu {
         }
 
         member.borrowBook(book);
+        return true;
+    }
+
+    private boolean returnBook(Member member, Book book) {
+        if (book.getBorrower() != member || book.getBorrowStatus() == BorrowStatus.AVAILABLE) {
+            return false;
+        }
+
+        member.returnBook(book);
         return true;
     }
 }

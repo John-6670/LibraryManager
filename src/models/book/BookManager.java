@@ -1,11 +1,11 @@
 package models.book;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import models.console.Output;
 import models.member.Member;
 import models.menu.Menu;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class BookManager extends Menu {
     private final ArrayList<Book> bookList;
@@ -102,9 +102,20 @@ public class BookManager extends Menu {
     }
 
     public void searchBookByTitle(String title) {
+        ArrayList<Book> searchResult = new ArrayList<>();
+
         for (Book book : bookList) {
-            if (book.getTitle().equals(title)) {
-                System.out.println(book);
+            if (book.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                searchResult.add(book);
+            }
+        }
+
+        if (searchResult.isEmpty()) {
+            System.err.println("No members found with the given name");
+        } else {
+            System.out.println("Search results:");
+            for (Book book : searchResult) {
+                System.out.println(book.toString()); // Display the member details
             }
         }
     }

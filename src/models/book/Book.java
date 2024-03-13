@@ -4,6 +4,7 @@ import models.member.Member;
 
 public class Book {
     private static int nextBookID = 2024_03_06; // Static variable to hold the next book ID
+    private static int allowedBorrowTime = 120_000; // Time in ms
     private final int bookID;
     private final String title;
     private final String author;
@@ -51,6 +52,11 @@ public class Book {
         return borrower;
     }
 
+    public long getRemainAllowedTime() {
+        // TODO: add body
+        return 0;
+    }
+
     public void setBorrowStatus(BorrowStatus borrowStatus) {
         this.borrowStatus = borrowStatus;
     }
@@ -61,6 +67,7 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book { Book ID: " + bookID + ", Title: " + title + ", Author: " + author + ", Genre: " + genre + ", Borrow Status: " + borrowStatus + " }";
+        return "Book { Book ID: " + bookID + ", Title: " + title + ", Author: " + author + ", Genre: " + genre +
+                ", Borrow Status: " + borrowStatus + ", Borrower: " + borrower + " }";
     }
 }

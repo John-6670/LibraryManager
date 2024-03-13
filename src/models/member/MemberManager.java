@@ -1,10 +1,10 @@
 package models.member;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import models.console.Output;
 import models.menu.Menu;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MemberManager extends Menu{
     private static ArrayList<Member> members; // Create an ArrayList to hold members
@@ -149,20 +149,20 @@ public class MemberManager extends Menu{
 
     // Method to search a member by their name
     private void searchMemberByName(String name) {
-        ArrayList<Member> searchResults = new ArrayList<>(); // Create an ArrayList to hold search results
+        ArrayList<Member> searchResult = new ArrayList<>(); // Create an ArrayList to hold search results
 
         for (Member member : members) {
             if (member.getName().toLowerCase().contains(name.toLowerCase())) {
-                searchResults.add(member); // Add the member to the search results
+                searchResult.add(member); // Add the member to the search results
             }
         }
 
-        if (searchResults.isEmpty()) {
+        if (searchResult.isEmpty()) {
             System.err.println("No members found with the given name");
         } else {
             System.out.println("Search results:");
-            for (Member member : searchResults) {
-                System.out.println(member.toString() + "\nMember ID: " + member.getMemberID()); // Display the member details
+            for (Member member : searchResult) {
+                System.out.println(member.toString()); // Display the member details
             }
         }
     }

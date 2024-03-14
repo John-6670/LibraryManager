@@ -20,6 +20,7 @@ public class Output {
 
     public static void pause(java.util.Scanner scan) {
         System.out.println("Press enter to continue...");
-        scan.next();
+        scan.nextLine(); // Consume the newline character
+        scan.nextLine(); // Wait for the user to press enter
     }
 }

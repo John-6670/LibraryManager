@@ -1,28 +1,24 @@
 package models.member;
 
 import models.book.*;
-import models.console.Output;
-import models.menu.Menu;
+import models.console.*;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class MemberManager extends Menu{
-    private static ArrayList<Member> members; // Create an ArrayList to hold members
-    private static final Scanner scan = new Scanner(System.in);
-
-    public MemberManager() {
-        members = new ArrayList<>(); // Initialize the ArrayList
-        menuItems = new String[] {
+public class MemberManager{
+    private final ArrayList<Member> members; // Create an ArrayList to hold members
+    private static final String[] menuItems = new String[] {
             "Add Member",
             "Update Member",
             "Delete Member",
             "Display Member Details",
             "Search Member by Name",
-            "Search Member by ID",
             "Display all Members",
             "Go back"
-        };
+    }; // Menu items
+
+    public MemberManager() {
+        members = new ArrayList<>(); // Initialize the ArrayList
     }
 
     // Method to start the member manager
@@ -31,45 +27,52 @@ public class MemberManager extends Menu{
 
         while (isRunning) {
             Output.printMenu("Member Manager", menuItems); // Display the menu
-            int choice = scan.nextInt();
+            int choice = Input.scan.nextInt();
             Output.clearScreen();
 
             switch (choice) {
                 case 1:
                     addMember();
                     break;
+
                 case 2:
                     System.out.print("Enter member ID: ");
-                    int memberID = scan.nextInt();
+                    int memberID = Input.scan.nextInt();
                     updateMember(memberID);
                     break;
+
                 case 3:
                     System.out.print("Enter member ID: ");
-                    memberID = scan.nextInt();
+                    memberID = Input.scan.nextInt();
                     members.removeIf(member -> member.getMemberID() == memberID);
                     break;
+
                 case 4:
                     System.out.print("Enter member ID: ");
-                    memberID = scan.nextInt();
+                    memberID = Input.scan.nextInt();
                     displayMemberDetails(memberID);
                     break;
+
                 case 5:
                     System.out.print("Enter member name: ");
-                    scan.nextLine(); // Consume the newline character
-                    String name = scan.nextLine();
+                    Input.scan.nextLine(); // Consume the newline character
+                    String name = Input.scan.nextLine();
                     searchMemberByName(name);
                     break;
+
                 case 6:
                     displayAllMembers();
                     break;
+
                 case 7:
                     isRunning = false;
                     break;
+
                 default:
                     System.out.println("Invalid choice");
             }
 
-            Output.pause(scan);
+            Output.pause(Input.scan);
             Output.clearScreen();
         }
     }
@@ -77,12 +80,12 @@ public class MemberManager extends Menu{
     // Method to create a member
     private void addMember() {
         System.out.print("Enter member name: ");
-        scan.nextLine(); // Consume the newline character
-        String name = scan.nextLine(); // Read the member name
+        Input.scan.nextLine(); // Consume the newline character
+        String name = Input.scan.nextLine(); // Read the member name
         System.out.print("Enter member age (or press Enter to skip): ");
-        String ageInput = scan.nextLine(); // Read the member age
+        String ageInput = Input.scan.nextLine(); // Read the member age
         System.out.println("Enter member gender (M for Male, F for Female) (or press Enter to skip): ");
-        String genderInput = scan.nextLine(); // Read the
+        String genderInput = Input.scan.nextLine(); // Read the
 
         if (name.isEmpty()) {
             System.err.println("Name cannot be empty");
@@ -107,12 +110,12 @@ public class MemberManager extends Menu{
             return;
         }
 
-        System.out.println(member.toString()); // Display the member details
+        System.out.println(member); // Display the member details
 
         System.out.print("Enter member name (or press Enter to skip): ");
-        String name = scan.nextLine(); // Read the member name
+        String name = Input.scan.nextLine(); // Read the member name
         System.out.println("Enter member age (or press Enter to skip): ");
-        String ageInput = scan.nextLine(); // Read the member age
+        String ageInput = Input.scan.nextLine(); // Read the member age
 
         if (!name.isEmpty()) {
             member.setName(name); // Update the member name
@@ -133,7 +136,7 @@ public class MemberManager extends Menu{
             return;
         }
 
-        System.out.println(member.toString()); // Display the member details
+        System.out.println(member); // Display the member details
     }
 
     // Method to search a member by their name
@@ -191,44 +194,56 @@ public class MemberManager extends Menu{
         return null; // If the member is not found, return null
     }
 
-    public void borrowOrReturn(BookManager bookManager) {
-        String[] borrowMenuItems = new String[] {
-                "Borrow a book",
-                "Return a book",
-                "Renew borrow time",
-                "Go back"
-        };
+    // Method to borrow a book
+    public void borrowBook(BookManager bookManager, int memberID, int bookID) {
+        Member member = searchMemberByID(memberID); // Search for the member
+        Book book = bookManager.searchBookByID(bookID); // Search for the book
 
-        Output.printMenu("Borrow/Return System", borrowMenuItems);
-        int choice = scan.nextInt();
-        Output.clearScreen();
-
-        System.out.println("Enter member ID: ");
-        int memberID = scan.nextInt();
-        Member member = searchMemberByID(memberID);
-
-        System.out.println("Enter book ID: ");
-        int bookID = scan.nextInt();
-        Book book = bookManager.searchBookByID(bookID);
-
-        switch (choice) {
-            case 1:
-                if (!member.borrowBook(book)) {
-                    System.err.println("This book is not available right now!!");
-                } else {
-                    System.out.println("The " + book.toString() + " is borrowed now.");
-                }
-                break;
-
-            case 2:
-                if (!member.returnBook(book)) {
-                    System.err.println("This book is not borrowed by you!!");
-                } else {
-                    System.out.println("The " + book.toString() + " is returned now.");
-                }
-                break;
-
-            // Other cases...
+        if (member == null) {
+            System.err.println("Member not found");
+            return;
         }
+
+        if (book == null) {
+            System.err.println("Book not found");
+            return;
+        }
+
+        if (member.getBorrowedBooks().size() >= Member.MAX_BORROWED_BOOKS) {
+            System.err.println("Member has already borrowed 5 books");
+            return;
+        }
+
+        if (!book.isAvailable()) {
+            System.err.println("Book is already borrowed");
+            return;
+        }
+
+        member.borrowBook(book); // Add the book to the member's borrowed books
+        System.out.println("Book borrowed successfully");
+    }
+
+    // Method to return a book
+    public void returnBook(BookManager bookManager, int memberID, int bookID) {
+        Member member = searchMemberByID(memberID); // Search for the member
+        Book book = bookManager.searchBookByID(bookID); // Search for the book
+
+        if (member == null) {
+            System.err.println("Member not found");
+            return;
+        }
+
+        if (book == null) {
+            System.err.println("Book not found");
+            return;
+        }
+
+        if (!member.getBorrowedBooks().contains(book)) {
+            System.err.println("Member has not borrowed the book");
+            return;
+        }
+
+        member.returnBook(book); // Remove the book from the member's borrowed books
+        System.out.println("Book returned successfully");
     }
 }

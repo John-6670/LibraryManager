@@ -1,19 +1,12 @@
 package models.book;
 
-import models.console.Output;
-import models.member.Member;
-import models.menu.Menu;
+import models.console.*;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class BookManager extends Menu {
-    private final ArrayList<Book> bookList;
-    private static final Scanner scan = new Scanner(System.in);
-
-    public BookManager() {
-        bookList = new ArrayList<>();
-        menuItems = new String[] {
+public class BookManager {
+    private final ArrayList<Book> bookList; // Create an ArrayList to hold books
+    private static final String[] menuItems = new String[] {
             "Add Book",
             "Display all books",
             "Search book by title",
@@ -22,14 +15,17 @@ public class BookManager extends Menu {
             "Search book by ID",
             "Delete book",
             "Exit"
-        };
+    }; // Menu items
+
+    public BookManager() {
+        bookList = new ArrayList<>();
     }
 
     public void start() {
         boolean isRunning = true;
         while (isRunning) {
             Output.printMenu("Book Manager", menuItems);
-            int choice = scan.nextInt();
+            int choice = Input.scan.nextInt();
             Output.clearScreen();
 
             switch (choice) {
@@ -43,31 +39,32 @@ public class BookManager extends Menu {
 
                 case 3:
                     System.out.print("Enter title: ");
-                    String title = scan.next();
+                    String title = Input.scan.next();
                     searchBookByTitle(title);
                     break;
 
                 case 4:
                     System.out.print("Enter author: ");
-                    String author = scan.next();
+                    String author = Input.scan.next();
                     searchBookByAuthor(author);
                     break;
 
                 case 5:
-                    System.out.print("Enter genre: ");
-                    Genre genre = Genre.valueOf(scan.next().toUpperCase());
+                    Output.printMenu("Genres", Genre.getGenresAsString());
+                    int genreChoice = Input.scan.nextInt();
+                    Genre genre = Genre.values()[genreChoice - 1];
                     searchBookByGenre(genre);
                     break;
 
                 case 6:
                     System.out.print("Enter ID: ");
-                    int id = scan.nextInt();
+                    int id = Input.scan.nextInt();
                     searchBookByID(id);
                     break;
 
                 case 7:
                     System.out.println("Enter ID: ");
-                    id = scan.nextInt();
+                    id = Input.scan.nextInt();
                     bookList.removeIf(book -> book.getBookID() == id);
                     break;
 
@@ -79,20 +76,23 @@ public class BookManager extends Menu {
                     System.out.println("Invalid choice");
             }
 
-            Output.pause(scan);
+            Output.pause(Input.scan);
             Output.clearScreen();
         }
     }
 
     public void addBook() {
         System.out.print("Enter title: ");
-        String title = scan.next();
+        String title = Input.scan.next();
         System.out.print("Enter author: ");
-        String author = scan.next();
-        System.out.print("Enter Genre: ");
-        Genre genre = Genre.valueOf(scan.next().toUpperCase());
+        String author = Input.scan.next();
+        Output.printMenu("Genres", Genre.getGenresAsString());
+        int choice = Input.scan.nextInt();
+        Genre genre = Genre.values()[choice - 1];
+
         Book book = new Book(title, author, genre);
         bookList.add(book);
+        System.out.println(book + " has been added");
     }
 
     public void displayAllBooks() {
@@ -111,19 +111,30 @@ public class BookManager extends Menu {
         }
 
         if (searchResult.isEmpty()) {
-            System.err.println("No members found with the given name");
+            System.err.println("No books found with the given title");
         } else {
             System.out.println("Search results:");
             for (Book book : searchResult) {
-                System.out.println(book.toString()); // Display the member details
+                System.out.println(book); // Display the member details
             }
         }
     }
 
     public void searchBookByAuthor(String author) {
+        ArrayList<Book> searchResult = new ArrayList<>();
+
         for (Book book : bookList) {
             if (book.getAuthor().equals(author)) {
-                System.out.println(book);
+                searchResult.add(book);
+            }
+        }
+
+        if (searchResult.isEmpty()) {
+            System.err.println("No books found with the given author");
+        } else {
+            System.out.println("Search results:");
+            for (Book book : searchResult) {
+                System.out.println(book); // Display the member details
             }
         }
     }

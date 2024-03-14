@@ -4,13 +4,14 @@ import models.member.Member;
 
 public class Book {
     private static int nextBookID = 2024_03_06; // Static variable to hold the next book ID
-    private static int allowedBorrowTime = 120_000; // Time in ms
+    private static final int allowedBorrowTime = 120_000; // Time in ms
+    private BorrowStatus borrowStatus = BorrowStatus.AVAILABLE; // Enum to hold the borrow status of the book
     private final int bookID;
     private final String title;
     private final String author;
     private final Genre genre;
-    private BorrowStatus borrowStatus = BorrowStatus.AVAILABLE; // Enum to hold the borrow status of the book
     private Member borrower = null;
+    private long borrowedTime;
 
     /**
      * Constructs a new Book object with the given title, author, and genre.
@@ -52,9 +53,17 @@ public class Book {
         return borrower;
     }
 
+    public boolean isAvailable() {
+        return borrowStatus == BorrowStatus.AVAILABLE;
+    }
+
     public long getRemainAllowedTime() {
-        // TODO: add body
-        return 0;
+        if (borrowStatus == BorrowStatus.BORROWED) {
+            long currentTime = System.currentTimeMillis();
+            return allowedBorrowTime - (currentTime - borrowedTime);
+        }
+
+        return 120_000;
     }
 
     public void setBorrowStatus(BorrowStatus borrowStatus) {
@@ -67,7 +76,13 @@ public class Book {
 
     @Override
     public String toString() {
+        String borrower = this.borrower == null ? "No one" : this.borrower.getName();
+
         return "Book { Book ID: " + bookID + ", Title: " + title + ", Author: " + author + ", Genre: " + genre +
                 ", Borrow Status: " + borrowStatus + ", Borrower: " + borrower + " }";
+    }
+
+    public void setBorrowedTime(long borrowedTime) {
+        this.borrowedTime = borrowedTime;
     }
 }

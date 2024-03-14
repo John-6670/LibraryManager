@@ -1,5 +1,6 @@
 package models.member;
 
+import models.book.*;
 import models.console.Output;
 import models.menu.Menu;
 
@@ -39,30 +40,18 @@ public class MemberManager extends Menu{
                     break;
                 case 2:
                     System.out.print("Enter member ID: ");
-                    String memberID = scan.next();
-                    try {
-                        updateMember(Integer.parseInt(memberID));
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid member ID");
-                    }
+                    int memberID = scan.nextInt();
+                    updateMember(memberID);
                     break;
                 case 3:
                     System.out.print("Enter member ID: ");
-                    memberID = scan.next();
-                    try {
-                        members.removeIf(member -> member.getMemberID() == Integer.parseInt(memberID));
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid member ID");
-                    }
+                    memberID = scan.nextInt();
+                    members.removeIf(member -> member.getMemberID() == memberID);
                     break;
                 case 4:
                     System.out.print("Enter member ID: ");
-                    memberID = scan.next();
-                    try {
-                        displayMemberDetails(Integer.parseInt(memberID));
-                    } catch (NumberFormatException e) {
-                        System.err.println("Invalid member ID");
-                    }
+                    memberID = scan.nextInt();
+                    displayMemberDetails(memberID);
                     break;
                 case 5:
                     System.out.print("Enter member name: ");
@@ -175,7 +164,7 @@ public class MemberManager extends Menu{
     }
 
     // Method to search a member by their ID
-    public Member searchMemberByID(int memberID) {
+    private Member searchMemberByID(int memberID) {
         // Initialize left and right pointers for binary search
         int left = 0;
         int right = members.size() - 1;
@@ -200,5 +189,46 @@ public class MemberManager extends Menu{
         }
     
         return null; // If the member is not found, return null
+    }
+
+    public void borrowOrReturn(BookManager bookManager) {
+        String[] borrowMenuItems = new String[] {
+                "Borrow a book",
+                "Return a book",
+                "Renew borrow time",
+                "Go back"
+        };
+
+        Output.printMenu("Borrow/Return System", borrowMenuItems);
+        int choice = scan.nextInt();
+        Output.clearScreen();
+
+        System.out.println("Enter member ID: ");
+        int memberID = scan.nextInt();
+        Member member = searchMemberByID(memberID);
+
+        System.out.println("Enter book ID: ");
+        int bookID = scan.nextInt();
+        Book book = bookManager.searchBookByID(bookID);
+
+        switch (choice) {
+            case 1:
+                if (!member.borrowBook(book)) {
+                    System.err.println("This book is not available right now!!");
+                } else {
+                    System.out.println("The " + book.toString() + " is borrowed now.");
+                }
+                break;
+
+            case 2:
+                if (!member.returnBook(book)) {
+                    System.err.println("This book is not borrowed by you!!");
+                } else {
+                    System.out.println("The " + book.toString() + " is returned now.");
+                }
+                break;
+
+            // Other cases...
+        }
     }
 }

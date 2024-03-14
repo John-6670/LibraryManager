@@ -44,13 +44,23 @@ public class Member {
                 "borrowedBooks = " + borrowedBooks.toString();
     }
 
-    public void borrowBook(Book book) {
+    public boolean borrowBook(Book book) {
+        if (book.getBorrower() == null || book.getBorrowStatus() != BorrowStatus.AVAILABLE) {
+            return false;
+        }
+
         book.setBorrower(this);
         book.setBorrowStatus(BorrowStatus.BORROWED);
+        return true;
     }
 
-    public void returnBook(Book book) {
+    public boolean returnBook(Book book) {
+        if (book.getBorrower() != this || book.getBorrowStatus() != BorrowStatus.BORROWED) {
+            return false;
+        }
+
         book.setBorrower(null);
         book.setBorrowStatus(BorrowStatus.AVAILABLE);
+        return true;
     }
 }

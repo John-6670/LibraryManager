@@ -36,7 +36,7 @@ public class Library extends Menu {
                     memberManager.start();
                     break;
                 case 3:
-                    borrowOrReturn();
+                    memberManager.borrowOrReturn(bookManager);
                     break;
                 case 4:
                     System.out.println("Exiting...");
@@ -46,57 +46,5 @@ public class Library extends Menu {
                     System.out.println("Invalid choice");
             }
         }
-    }
-
-    private void borrowOrReturn() {
-        String[] borrowMenuItems = new String[] {
-                "Borrow a book",
-                "Return a book",
-                "Renew borrow time",
-                "Go back"
-        };
-
-        Output.printMenu("Borrow/Return System", borrowMenuItems);
-        int choice = scan.nextInt();
-        Output.clearScreen();
-
-        System.out.println("Enter member ID: ");
-        int memberID = scan.nextInt();
-        Member member = memberManager.searchMemberByID(memberID);
-
-        System.out.println("Enter book ID: ");
-        int bookID = scan.nextInt();
-        Book book = bookManager.searchBookByID(bookID);
-
-        switch (choice) {
-            case 1:
-                if (!borrowBook(member, book)) {
-                    System.err.println("This book is not available right now!!");
-                } else {
-                    System.out.println("The " + book.toString() + " is borrowed now.");
-                }
-                break;
-
-            case 2:
-
-        }
-    }
-
-    private boolean borrowBook(Member member, Book book) {
-        if (book.getBorrower() == null || book.getBorrowStatus() != BorrowStatus.AVAILABLE) {
-            return false;
-        }
-
-        member.borrowBook(book);
-        return true;
-    }
-
-    private boolean returnBook(Member member, Book book) {
-        if (book.getBorrower() != member || book.getBorrowStatus() == BorrowStatus.AVAILABLE) {
-            return false;
-        }
-
-        member.returnBook(book);
-        return true;
     }
 }

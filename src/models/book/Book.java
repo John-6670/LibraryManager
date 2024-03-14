@@ -2,6 +2,13 @@ package models.book;
 
 import models.member.Member;
 
+/**
+ * Represents a book in the library.
+ * This class provides all the necessary details about a book, such as its title, author, genre, and borrow status.
+ * It also includes methods to get and set these details.
+ *
+ * @author John
+ */
 public class Book {
     private static int nextBookID = 2024_03_06; // Static variable to hold the next book ID
     private static final int allowedBorrowTime = 120_000; // Time in ms
@@ -29,34 +36,66 @@ public class Book {
     }
 
     // Getters and Setters
+
+    /**
+     * Returns the ID of the book.
+     *
+     * @return the book's ID
+     */
     public int getBookID() {
         return bookID;
     }
 
+    /**
+     * Returns the title of the book.
+     *
+     * @return the book's title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Returns the author of the book.
+     *
+     * @return the book's author
+     */
     public String getAuthor() {
         return author;
     }
 
+    /**
+     * Returns the genre of the book.
+     *
+     * @return the book's genre
+     */
     public Genre getGenre() {
         return genre;
     }
 
+    /**
+     * Returns the borrow status of the book.
+     *
+     * @return the book's borrow status
+     */
     public BorrowStatus getBorrowStatus() {
         return borrowStatus;
     }
 
+    /**
+     * Returns the member who borrowed the book.
+     *
+     * @return the member who borrowed the book
+     */
     public Member getBorrower() {
         return borrower;
     }
 
-    public boolean isAvailable() {
-        return borrowStatus == BorrowStatus.AVAILABLE;
-    }
-
+    /**
+     * Returns the remaining allowed time for the book to be returned.
+     *
+     * @return the remaining allowed time in milliseconds
+     */
     public long getRemainAllowedTime() {
         if (borrowStatus == BorrowStatus.BORROWED) {
             long currentTime = System.currentTimeMillis();
@@ -66,14 +105,29 @@ public class Book {
         return 120_000;
     }
 
+    /**
+     * Sets the borrow status of the book.
+     *
+     * @param borrowStatus the new borrow status
+     */
     public void setBorrowStatus(BorrowStatus borrowStatus) {
         this.borrowStatus = borrowStatus;
     }
 
+    /**
+     * Sets the member who borrowed the book.
+     *
+     * @param borrower the member who borrowed the book
+     */
     public void setBorrower(Member borrower) {
         this.borrower = borrower;
     }
 
+    /**
+     * Returns a string representation of the book.
+     *
+     * @return a string representation of the book
+     */
     @Override
     public String toString() {
         String borrower = this.borrower == null ? "No one" : this.borrower.getName();
@@ -82,6 +136,11 @@ public class Book {
                 ", Borrow Status: " + borrowStatus + ", Borrower: " + borrower + " }";
     }
 
+    /**
+     * Sets the time when the book was borrowed.
+     *
+     * @param borrowedTime the time when the book was borrowed
+     */
     public void setBorrowedTime(long borrowedTime) {
         this.borrowedTime = borrowedTime;
     }

@@ -4,23 +4,46 @@ import models.console.*;
 
 import java.util.ArrayList;
 
+/**
+ * This class manages the books in the library.
+ * It provides functionalities to add, display, search, and delete books.
+ *
+ * @author John
+ */
 public class BookManager {
     private final ArrayList<Book> bookList; // Create an ArrayList to hold books
     private static final String[] menuItems = new String[] {
             "Add Book",
             "Display all books",
             "Search book by title",
-            "Search book by author",
+            "List books by author",
             "Search book by genre",
             "Search book by ID",
             "Delete book",
-            "Exit"
+            "Go back"
     }; // Menu items
 
+    /**
+     * Constructor for BookManager class.
+     * Initializes the ArrayList of books.
+     */
     public BookManager() {
         bookList = new ArrayList<>();
     }
 
+    /**
+     * Getter for the book list.
+     *
+     * @return The ArrayList of books.
+     */
+    public ArrayList<Book> getBookList() {
+        return bookList;
+    }
+
+    /**
+     * Starts the book manager.
+     * Displays a menu to the user and performs actions based on the user's choice.
+     */
     public void start() {
         boolean isRunning = true;
         while (isRunning) {
@@ -76,16 +99,26 @@ public class BookManager {
                     System.out.println("Invalid choice");
             }
 
-            Output.pause(Input.scan);
+            if (isRunning) {
+                Output.pause(Input.scan);
+            }
             Output.clearScreen();
         }
     }
 
+    /**
+     * Starts the book manager.
+     * Displays a menu to the user and performs actions based on the user's choice.
+     */
     public void addBook() {
         System.out.print("Enter title: ");
         String title = Input.scan.next();
+        title = title.toUpperCase().charAt(0) + title.substring(1).toLowerCase(); // Capitalize the first letter
+
         System.out.print("Enter author: ");
         String author = Input.scan.next();
+        author = author.toUpperCase().charAt(0) + author.substring(1).toLowerCase(); // Capitalize the first letter
+
         Output.printMenu("Genres", Genre.getGenresAsString());
         int choice = Input.scan.nextInt();
         Genre genre = Genre.values()[choice - 1];
@@ -95,12 +128,20 @@ public class BookManager {
         System.out.println(book + " has been added");
     }
 
+    /**
+     * Displays all books in the library.
+     */
     public void displayAllBooks() {
         for (Book book : bookList) {
             System.out.println(book);
         }
     }
 
+    /**
+     * Searches for a book by its title.
+     *
+     * @param title The title to search for.
+     */
     public void searchBookByTitle(String title) {
         ArrayList<Book> searchResult = new ArrayList<>();
 
@@ -115,16 +156,21 @@ public class BookManager {
         } else {
             System.out.println("Search results:");
             for (Book book : searchResult) {
-                System.out.println(book); // Display the member details
+                System.out.println(book); // Display the book details
             }
         }
     }
 
+    /**
+     * Searches for a book by its author.
+     *
+     * @param author The author to search for.
+     */
     public void searchBookByAuthor(String author) {
         ArrayList<Book> searchResult = new ArrayList<>();
 
         for (Book book : bookList) {
-            if (book.getAuthor().equals(author)) {
+            if (book.getAuthor().toLowerCase().contains(author.toLowerCase())) {
                 searchResult.add(book);
             }
         }
@@ -134,19 +180,42 @@ public class BookManager {
         } else {
             System.out.println("Search results:");
             for (Book book : searchResult) {
-                System.out.println(book); // Display the member details
+                System.out.println(book); // Display the book details
             }
         }
     }
 
+    /**
+     * Searches for a book by its genre.
+     *
+     * @param genre The genre to search for.
+     */
     public void searchBookByGenre(Genre genre) {
+        ArrayList<Book> searchResult = new ArrayList<>();
+
         for (Book book : bookList) {
             if (book.getGenre() == genre) {
-                System.out.println(book);
+                searchResult.add(book);
+            }
+        }
+
+        if (searchResult.isEmpty()) {
+            System.err.println("No books found with the given genre");
+        } else {
+            System.out.println("Search results:");
+            for (Book book : searchResult) {
+                System.out.println(book); // Display the book details
             }
         }
     }
 
+    /**
+     * Searches for a book by its ID.
+     *
+     * @param id The ID to search for.
+     *
+     * @return The Book object if found, null otherwise.
+     */
     public Book searchBookByID(int id) {
         // Initialize left and right pointers for binary search
         int left = 0;

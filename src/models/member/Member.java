@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 /**
  * Represents a member of the library.
+ *
+ * @author John
  */
 public class Member {
     private static int nextMemberID = 2024_03_06; // Static variable to hold the next member ID
@@ -107,13 +109,20 @@ public class Member {
      * @return true if the book was successfully borrowed, false otherwise
      */
     public boolean borrowBook(Book book) {
-        if (book.getBorrower() == null || book.getBorrowStatus() != BorrowStatus.AVAILABLE) {
+        if (book.getBorrower() != null || book.getBorrowStatus() != BorrowStatus.AVAILABLE || borrowedBooks.size() >= MAX_BORROWED_BOOKS) {
             return false;
         }
 
-        book.setBorrower(this);
-        book.setBorrowStatus(BorrowStatus.BORROWED);
-        book.setBorrowedTime(System.currentTimeMillis());
+        for (Book borrowedBook : borrowedBooks) {
+            if (borrowedBook.getBorrowStatus() == BorrowStatus.EXPIRED) {
+                return false;
+            }
+        }
+
+        borrowedBooks.add(book); // Add the book to the member's borrowed books
+        book.setBorrower(this); // Set the book's borrower to the member
+        book.setBorrowStatus(BorrowStatus.BORROWED); // Set the book's borrow status to BORROWED
+        book.setBorrowedTime(System.currentTimeMillis()); // Set the book's borrowed time to the current time
         return true;
     }
 
@@ -124,13 +133,14 @@ public class Member {
      * @return true if the book was successfully returned, false otherwise
      */
     public boolean returnBook(Book book) {
-        if (book.getBorrower() != this || book.getBorrowStatus() != BorrowStatus.BORROWED) {
+        if (book.getBorrower() != this || book.getBorrowStatus() != BorrowStatus.BORROWED || !borrowedBooks.contains(book)) {
             return false;
         }
 
-        book.setBorrower(null);
-        book.setBorrowStatus(BorrowStatus.AVAILABLE);
-        book.setBorrowedTime(0);
+        borrowedBooks.remove(book); // Remove the book from the member's borrowed books
+        book.setBorrower(null); // Set the book's borrower to null
+        book.setBorrowStatus(BorrowStatus.AVAILABLE); // Set the book's borrow status to AVAILABLE
+        book.setBorrowedTime(0); // Reset the book's borrowed time
         return true;
     }
 }

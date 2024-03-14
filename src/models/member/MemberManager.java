@@ -5,6 +5,13 @@ import models.console.*;
 
 import java.util.ArrayList;
 
+/**
+ * This class manages the members of the library.
+ * It provides functionalities to add, update, delete, display and search members.
+ * It also handles the borrowing and returning of books by members.
+ *
+ * @author John
+ */
 public class MemberManager{
     private final ArrayList<Member> members; // Create an ArrayList to hold members
     private static final String[] menuItems = new String[] {
@@ -17,11 +24,18 @@ public class MemberManager{
             "Go back"
     }; // Menu items
 
+    /**
+     * Constructor for MemberManager class.
+     * Initializes the ArrayList of members.
+     */
     public MemberManager() {
         members = new ArrayList<>(); // Initialize the ArrayList
     }
 
-    // Method to start the member manager
+    /**
+     * Starts the member manager.
+     * Displays a menu to the user and performs actions based on the user's choice.
+     */
     public void start() {
         boolean isRunning = true;
 
@@ -72,18 +86,26 @@ public class MemberManager{
                     System.out.println("Invalid choice");
             }
 
-            Output.pause(Input.scan);
+            if (isRunning) {
+                Output.pause(Input.scan);
+            }
             Output.clearScreen();
         }
     }
 
-    // Method to create a member
+    /**
+     * Adds a new member to the library.
+     * Prompts the user for the member's details and creates a new Member object.
+     */
     private void addMember() {
         System.out.print("Enter member name: ");
         Input.scan.nextLine(); // Consume the newline character
         String name = Input.scan.nextLine(); // Read the member name
+        name = name.toUpperCase().charAt(0) + name.substring(1).toLowerCase(); // Capitalize the first letter
+
         System.out.print("Enter member age (or press Enter to skip): ");
         String ageInput = Input.scan.nextLine(); // Read the member age
+
         System.out.println("Enter member gender (M for Male, F for Female) (or press Enter to skip): ");
         String genderInput = Input.scan.nextLine(); // Read the
 
@@ -101,7 +123,12 @@ public class MemberManager{
         members.add(member);
     }
 
-    // Method to update a member's details
+    /**
+     * Updates a member's details.
+     * Prompts the user for the new details and updates the Member object.
+     *
+     * @param memberID The ID of the member to be updated.
+     */
     private void updateMember(int memberID) {
         Member member = searchMemberByID(memberID); // Search for the member
         
@@ -127,7 +154,12 @@ public class MemberManager{
         }
     }
 
-    // Method to display a member's details
+    /**
+     * Displays a member's details.
+     * Searches for the member by their ID and prints their details.
+     *
+     * @param memberID The ID of the member whose details are to be displayed.
+     */
     private void displayMemberDetails(int memberID) {
         Member member = searchMemberByID(memberID); // Search for the member
 
@@ -139,7 +171,12 @@ public class MemberManager{
         System.out.println(member); // Display the member details
     }
 
-    // Method to search a member by their name
+    /**
+     * Searches for a member by their name.
+     * Prints the details of all members whose names contain the given name.
+     *
+     * @param name The name to search for.
+     */
     private void searchMemberByName(String name) {
         ArrayList<Member> searchResult = new ArrayList<>(); // Create an ArrayList to hold search results
 
@@ -159,14 +196,23 @@ public class MemberManager{
         }
     }
 
-    // Method to display all members at once
+    /**
+     * Displays the details of all members.
+     */
     private void displayAllMembers() {
         for (Member member : members) {
             System.out.println(member.toString());
         }
     }
 
-    // Method to search a member by their ID
+    /**
+     * Searches for a member by their ID.
+     * Uses binary search to find the member.
+     *
+     * @param memberID The ID to search for.
+     *
+     * @return The Member object if found, null otherwise.
+     */
     private Member searchMemberByID(int memberID) {
         // Initialize left and right pointers for binary search
         int left = 0;
@@ -194,7 +240,14 @@ public class MemberManager{
         return null; // If the member is not found, return null
     }
 
-    // Method to borrow a book
+    /**
+     * Borrows a book for a member.
+     * Searches for the member and the book by their IDs and adds the book to the member's borrowed books.
+     *
+     * @param bookManager The BookManager object to search for the book.
+     * @param memberID The ID of the member who wants to borrow the book.
+     * @param bookID The ID of the book to be borrowed.
+     */
     public void borrowBook(BookManager bookManager, int memberID, int bookID) {
         Member member = searchMemberByID(memberID); // Search for the member
         Book book = bookManager.searchBookByID(bookID); // Search for the book
@@ -214,16 +267,23 @@ public class MemberManager{
             return;
         }
 
-        if (!book.isAvailable()) {
-            System.err.println("Book is already borrowed");
+        // Add the book to the member's borrowed books
+        if (!member.borrowBook(book)) {
+            System.out.println("Book is not available for borrowing or member has expired borrow time limit");
             return;
         }
 
-        member.borrowBook(book); // Add the book to the member's borrowed books
         System.out.println("Book borrowed successfully");
     }
 
-    // Method to return a book
+    /**
+     * Returns a book borrowed by a member.
+     * Searches for the member and the book by their IDs and removes the book from the member's borrowed books.
+     *
+     * @param bookManager The BookManager object to search for the book.
+     * @param memberID The ID of the member who wants to return the book.
+     * @param bookID The ID of the book to be returned.
+     */
     public void returnBook(BookManager bookManager, int memberID, int bookID) {
         Member member = searchMemberByID(memberID); // Search for the member
         Book book = bookManager.searchBookByID(bookID); // Search for the book
@@ -238,12 +298,11 @@ public class MemberManager{
             return;
         }
 
-        if (!member.getBorrowedBooks().contains(book)) {
-            System.err.println("Member has not borrowed the book");
+        // Remove the book from the member's borrowed books
+        if (!member.returnBook(book)) {
+            System.out.println("Book is not borrowed by the member");
             return;
         }
-
-        member.returnBook(book); // Remove the book from the member's borrowed books
         System.out.println("Book returned successfully");
     }
 }

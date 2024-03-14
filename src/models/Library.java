@@ -2,8 +2,14 @@ package models;
 
 import models.book.*;
 import models.console.*;
-import models.member.*;
+import models.member.MemberManager;
 
+/**
+ * This class represents a library, which manages books and members.
+ * It provides functionalities to manage books, manage members, and borrow/return books.
+ *
+ * @author John
+ */
 public class Library {
     private static final MemberManager memberManager = new MemberManager();
     private static final BookManager bookManager = new BookManager();
@@ -14,6 +20,10 @@ public class Library {
             "Exit"
     }; // Menu items
 
+    /**
+     * Starts the library management system.
+     * Displays a menu to the user and performs actions based on the user's choice.
+     */
     public static void start() {
         boolean isRunning = true;
         while (isRunning) {
@@ -41,6 +51,10 @@ public class Library {
         }
     }
 
+    /**
+     * Displays a menu for borrowing and returning books.
+     * Prompts the user for the member ID and book ID and performs actions based on the user's choice.
+     */
     private static void borrowReturnMenu() {
         String[] borrowMenuItems = new String[] {
                 "Borrow a book",
@@ -56,6 +70,12 @@ public class Library {
         int memberID = Input.scan.nextInt();
         System.out.println("Enter book ID: ");
         int bookID = Input.scan.nextInt();
+
+        for (Book book : bookManager.getBookList()) {
+            if (book.getRemainAllowedTime() < 0) {
+                book.setBorrowStatus(BorrowStatus.EXPIRED);
+            }
+        }
 
         switch (choice) {
             case 1:

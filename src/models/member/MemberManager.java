@@ -109,10 +109,6 @@ public class MemberManager{
         System.out.println("Enter member gender (M for Male, F for Female) (or press Enter to skip): ");
         String genderInput = Input.scan.nextLine(); // Read the
 
-        if (name.isEmpty()) {
-            System.err.println("Name cannot be empty");
-            return;
-        }
         byte age = ageInput.isEmpty() ? 0 : Byte.parseByte(ageInput);
         char gender = genderInput.isEmpty() ? 'U' : genderInput.toUpperCase().charAt(0);
 

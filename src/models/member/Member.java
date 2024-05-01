@@ -14,8 +14,8 @@ public class Member {
     private static int nextMemberID = 2024_03_06; // Static variable to hold the next member ID
     private final int memberID;
     private String name;
-    private byte age;
-    private final char gender;
+    private Byte age;
+    private final Character gender;
     private final ArrayList<Book> borrowedBooks = new ArrayList<>(); // ArrayList to hold the books borrowed by the member
     public static final int MAX_BORROWED_BOOKS = 5; // Maximum number of books a member can borrow
 
@@ -27,7 +27,7 @@ public class Member {
      * @param age    the age of the member
      * @param gender the gender of the member
      */
-    public Member(String name, byte age, char gender) {
+    public Member(String name, Byte age, Character gender) {
         this.name = name;
         this.age = age;
         this.gender = gender;
@@ -80,6 +80,29 @@ public class Member {
         return borrowedBooks;
     }
 
+    public String toStringTable() {
+        String gender;
+        if (this.gender == null) {
+            gender = "Unknown";
+        } else {
+            gender = switch (this.gender) {
+                case 'M' -> "Male";
+                default -> "Female";
+            };
+        }
+
+        String age;
+        if (this.age == null) {
+            age = "Unknown";
+        } else {
+            age = String.valueOf(this.age);
+        }
+
+        int numberOFBorrowedBooks = borrowedBooks.size();
+
+        return String.format("| %-9s | %-18s | %-7s | %-7s | %-24d |", memberID, name, age, gender, numberOFBorrowedBooks);
+    }
+
     /**
      * Returns a string representation of the member.
      *
@@ -87,11 +110,22 @@ public class Member {
      */
     @Override
     public String toString() {
-        String gender = switch (this.gender) {
-            case 'M' -> "Male";
-            case 'F' -> "Female";
-            default -> "Unknown";
-        };
+        String gender;
+        if (this.gender == null) {
+            gender = "Unknown";
+        } else {
+            gender = switch (this.gender) {
+                case 'M' -> "Male";
+                default -> "Female";
+            };
+        }
+
+        String age;
+        if (this.age == null) {
+            age = "Unknown";
+        } else {
+            age = String.valueOf(this.age);
+        }
 
         if (borrowedBooks.isEmpty()) {
             return "Member { memberID: " + memberID + ", name: '" + name + "', " + "age: " + age + ", gender: '" + gender + "', " +

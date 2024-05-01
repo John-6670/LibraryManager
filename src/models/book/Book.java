@@ -124,6 +124,26 @@ public class Book {
     }
 
     /**
+     * Sets the time when the book was borrowed.
+     *
+     * @param borrowedTime the time when the book was borrowed
+     */
+    public void setBorrowedTime(long borrowedTime) {
+        this.borrowedTime = borrowedTime;
+    }
+
+    /**
+     * Returns a formatted string representation of the book for table display.
+     * The string includes the book's ID, title, author, genre, borrow status, and the ID of the borrower (if any).
+     *
+     * @return a formatted string representation of the book for table display
+     */
+    public String toStringTable() {
+        String borrowerId = (borrower != null) ? String.valueOf(borrower.getMemberID()) : "None";
+        return String.format("| %-8s | %-18s | %-13s | %-15s | %-13s | %-13s |", bookID, title, author, genre, borrowStatus, borrowerId);
+    }
+
+    /**
      * Returns a string representation of the book.
      *
      * @return a string representation of the book
@@ -134,14 +154,5 @@ public class Book {
 
         return "Book { Book ID: " + bookID + ", Title: " + title + ", Author: " + author + ", Genre: " + genre +
                 ", Borrow Status: " + borrowStatus + ", Borrower: " + borrower + " }";
-    }
-
-    /**
-     * Sets the time when the book was borrowed.
-     *
-     * @param borrowedTime the time when the book was borrowed
-     */
-    public void setBorrowedTime(long borrowedTime) {
-        this.borrowedTime = borrowedTime;
     }
 }

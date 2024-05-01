@@ -109,8 +109,8 @@ public class MemberManager{
         System.out.println("Enter member gender (M for Male, F for Female) (or press Enter to skip): ");
         String genderInput = Input.scan.nextLine(); // Read the
 
-        byte age = ageInput.isEmpty() ? 0 : Byte.parseByte(ageInput);
-        char gender = genderInput.isEmpty() ? 'U' : genderInput.toUpperCase().charAt(0);
+        Byte age = ageInput.isEmpty() ? null : Byte.parseByte(ageInput);
+        Character gender = genderInput.isEmpty() ? null : genderInput.toUpperCase().charAt(0);
 
         Member member = new Member(name, age, gender); // Create a new member
 
@@ -196,8 +196,11 @@ public class MemberManager{
      * Displays the details of all members.
      */
     private void displayAllMembers() {
+        System.out.printf ("| %-9s | %-18s | %-7s | %-7s | %-24s |\n", "Member ID", "Name", "Age", "Gender", "Number of borrowed books");
+        System.out.println("|-----------|--------------------|---------|---------|--------------------------|");
+
         for (Member member : members) {
-            System.out.println(member.toString());
+            System.out.println(member.toStringTable());
         }
     }
 

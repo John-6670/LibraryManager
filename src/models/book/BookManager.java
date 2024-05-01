@@ -57,7 +57,7 @@ public class BookManager {
                     break;
 
                 case 2:
-                    displayAllBooks();
+                    ShowAllBooks();
                     break;
 
                 case 3:
@@ -82,7 +82,12 @@ public class BookManager {
                 case 6:
                     System.out.print("Enter ID: ");
                     int id = Input.scan.nextInt();
-                    searchBookByID(id);
+                    Book result = searchBookByID(id);
+                    if (result != null) {
+                        System.out.println(result);
+                    } else {
+                        System.err.println("Book not found");
+                    }
                     break;
 
                 case 7:
@@ -131,9 +136,12 @@ public class BookManager {
     /**
      * Displays all books in the library.
      */
-    public void displayAllBooks() {
+    public void ShowAllBooks() {
+        System.out.printf ("| %-8s | %-18s | %-13s | %-15s | %-13s | %-13s |\n", "Book ID", "Title", "Author", "Genre", "Borrow Status", "Borrower ID");
+        System.out.println("|----------|--------------------|---------------|-----------------|---------------|---------------|");
+
         for (Book book : bookList) {
-            System.out.println(book);
+            System.out.println(book.toStringTable());
         }
     }
 
@@ -154,9 +162,11 @@ public class BookManager {
         if (searchResult.isEmpty()) {
             System.err.println("No books found with the given title");
         } else {
-            System.out.println("Search results:");
+            System.out.printf ("| %-8s | %-18s | %-13s | %-15s | %-13s | %-13s |\n", "Book ID", "Title", "Author", "Genre", "Borrow Status", "Borrower ID");
+            System.out.println("|----------|--------------------|---------------|-----------------|---------------|---------------|");
+
             for (Book book : searchResult) {
-                System.out.println(book); // Display the book details
+                System.out.println(book.toStringTable());
             }
         }
     }
@@ -178,9 +188,11 @@ public class BookManager {
         if (searchResult.isEmpty()) {
             System.err.println("No books found with the given author");
         } else {
-            System.out.println("Search results:");
+            System.out.printf ("| %-8s | %-18s | %-13s | %-15s | %-13s | %-13s |\n", "Book ID", "Title", "Author", "Genre", "Borrow Status", "Borrower ID");
+            System.out.println("|----------|--------------------|---------------|-----------------|---------------|---------------|");
+
             for (Book book : searchResult) {
-                System.out.println(book); // Display the book details
+                System.out.println(book.toStringTable());
             }
         }
     }
@@ -202,9 +214,11 @@ public class BookManager {
         if (searchResult.isEmpty()) {
             System.err.println("No books found with the given genre");
         } else {
-            System.out.println("Search results:");
+            System.out.printf ("| %-8s | %-18s | %-13s | %-15s | %-13s | %-13s |\n", "Book ID", "Title", "Author", "Genre", "Borrow Status", "Borrower ID");
+            System.out.println("|----------|--------------------|---------------|-----------------|---------------|---------------|");
+
             for (Book book : searchResult) {
-                System.out.println(book); // Display the book details
+                System.out.println(book.toStringTable());
             }
         }
     }

@@ -117,7 +117,7 @@ public class MemberManager implements Manager{
         Member member = new Member(name, age, gender); // Create a new member
 
         System.out.println("Member created successfully");
-        System.out.println("Member ID: " + member.getMemberID());
+        System.out.println("Member ID: " + member.getID());
         members.add(member);
     }
 
@@ -200,7 +200,7 @@ public class MemberManager implements Manager{
      */
     @Override
     public void delete(int memberID) {
-        members.removeIf(member -> member.getMemberID() == memberID); // Remove the member from the list
+        members.removeIf(member -> member.getID() == memberID); // Remove the member from the list
     }
 
     /**
@@ -239,12 +239,12 @@ public class MemberManager implements Manager{
             Member member = members.get(mid); // Get the member at the middle index
     
             // If the member's ID matches the search ID, return the member
-            if (member.getMemberID() == memberID) {
+            if (member.getID() == memberID) {
                 return member;
             }
     
             // If the member's ID is less than the search ID, discard the left half
-            if (member.getMemberID() < memberID) {
+            if (member.getID() < memberID) {
                 left = mid + 1;
             } else {
                 // Otherwise, discard the right half

@@ -177,7 +177,7 @@ public class BookManager implements Manager{
         String author = Input.scan.next();
         author = author.toUpperCase().charAt(0) + author.substring(1).toLowerCase(); // Capitalize the first letter
 
-        book.setTitle(title);
+        book.setName(title);
         book.setAuthor(author);
 
         System.out.println("Book updated successfully");
@@ -193,7 +193,7 @@ public class BookManager implements Manager{
         ArrayList<Book> searchResult = new ArrayList<>();
 
         for (Book book : bookList) {
-            if (book.getTitle().toLowerCase().contains(title.toLowerCase())) {
+            if (book.getName().toLowerCase().contains(title.toLowerCase())) {
                 searchResult.add(book);
             }
         }
@@ -218,7 +218,7 @@ public class BookManager implements Manager{
      */
     @Override
     public void delete(int id) {
-        bookList.removeIf(book -> book.getBookID() == id);
+        bookList.removeIf(book -> book.getID() == id);
     }
 
     /**
@@ -237,12 +237,12 @@ public class BookManager implements Manager{
             Book book = bookList.get(mid); // Get the book at the middle index
 
             // If the book's ID matches the search ID, return the book
-            if (book.getBookID() == id) {
+            if (book.getID() == id) {
                 return book;
             }
 
             // If the book's ID is less than the search ID, discard the left half
-            if (book.getBookID() < id) {
+            if (book.getID() < id) {
                 left = mid + 1;
             } else {
                 // Otherwise, discard the right half

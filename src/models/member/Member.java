@@ -2,6 +2,7 @@ package models.member;
 
 import models.book.Book;
 import models.book.BorrowStatus;
+import models.base.LibraryItem;
 
 import java.util.ArrayList;
 
@@ -10,13 +11,10 @@ import java.util.ArrayList;
  *
  * @author John
  */
-public class Member {
-    private static int nextMemberID = 2024_03_06; // Static variable to hold the next member ID
-    private final int memberID;
-    private String name;
+public class Member extends LibraryItem {
     private Byte age;
-    private final Character gender;
-    private final ArrayList<Book> borrowedBooks = new ArrayList<>(); // ArrayList to hold the books borrowed by the member
+    private final Character GENDER;
+    private final ArrayList<Book> BORROWED_BOOKS = new ArrayList<>(); // ArrayList to hold the books borrowed by the member
     public static final int MAX_BORROWED_BOOKS = 5; // Maximum number of books a member can borrow
 
 
@@ -28,19 +26,9 @@ public class Member {
      * @param gender the gender of the member
      */
     public Member(String name, Byte age, Character gender) {
-        this.name = name;
+        super(name);
         this.age = age;
-        this.gender = gender;
-        this.memberID = nextMemberID++;
-    }
-
-    /**
-     * Sets the name of the member.
-     *
-     * @param name the new name of the member
-     */
-    public void setName(String name) {
-        this.name = name;
+        this.GENDER = gender;
     }
 
     /**
@@ -53,54 +41,28 @@ public class Member {
     }
 
     /**
-     * Returns the ID of the member.
-     *
-     * @return the ID of the member
-     */
-    public int getMemberID() {
-        return memberID;
-    }
-
-    /**
-     * Returns the name of the member.
-     *
-     * @return the name of the member
-     */
-    public String getName() {
-        return name;
-    }
-
-
-    /**
      * Returns the list of books borrowed by the member.
      *
      * @return an ArrayList of Book objects representing the books currently borrowed by the member
      */
     public ArrayList<Book> getBorrowedBooks() {
-        return borrowedBooks;
+        return BORROWED_BOOKS;
     }
 
+    /**
+     * Returns a formatted string representation of the member for table display.
+     * The string includes the member's ID, name, age, gender, number of borrowed books.
+     *
+     * @return a formatted string representation of the member for table display
+     */
+    @Override
     public String toStringTable() {
-        String gender;
-        if (this.gender == null) {
-            gender = "Unknown";
-        } else {
-            gender = switch (this.gender) {
-                case 'M' -> "Male";
-                default -> "Female";
-            };
-        }
+        String gender = genderConvertor();
+        String age = ageConvertor();
 
-        String age;
-        if (this.age == null) {
-            age = "Unknown";
-        } else {
-            age = String.valueOf(this.age);
-        }
+        int numberOFBorrowedBooks = BORROWED_BOOKS.size();
 
-        int numberOFBorrowedBooks = borrowedBooks.size();
-
-        return String.format("| %-9s | %-18s | %-7s | %-7s | %-24d |", memberID, name, age, gender, numberOFBorrowedBooks);
+        return String.format("| %-9s | %-18s | %-7s | %-7s | %-24d |", ID, name, age, gender, numberOFBorrowedBooks);
     }
 
     /**
@@ -110,35 +72,46 @@ public class Member {
      */
     @Override
     public String toString() {
-        String gender;
-        if (this.gender == null) {
-            gender = "Unknown";
-        } else {
-            gender = switch (this.gender) {
-                case 'M' -> "Male";
-                default -> "Female";
-            };
-        }
+        String gender = genderConvertor();
+        String age = ageConvertor();
 
-        String age;
-        if (this.age == null) {
-            age = "Unknown";
-        } else {
-            age = String.valueOf(this.age);
-        }
-
-        if (borrowedBooks.isEmpty()) {
-            return "Member { memberID: " + memberID + ", name: '" + name + "', " + "age: " + age + ", gender: '" + gender + "', " +
+        if (BORROWED_BOOKS.isEmpty()) {
+            return "Member { memberID: " + ID + ", name: '" + name + "', " + "age: " + age + ", gender: '" + gender + "', " +
                     "borrowedBooks: None }";
         }
 
         ArrayList<String> borrowedBooksNames = new ArrayList<>();
-        for (Book book : borrowedBooks) {
-            borrowedBooksNames.add(book.getTitle() + "By: " + book.getAuthor());
+        for (Book book : BORROWED_BOOKS) {
+            borrowedBooksNames.add(book.getName() + "By: " + book.getAuthor());
         }
 
-        return "Member { memberID: " + memberID + ", name: '" + name + "', " + "age: " + age + ", gender: '" + gender + "', " +
+        return "Member { memberID: " + ID + ", name: '" + name + "', " + "age: " + age + ", gender: '" + gender + "', " +
                 "borrowedBooks: " + borrowedBooksNames + " }";
+    }
+
+    /**
+     * Returns gender of the member.
+     *
+     * @return the gender of the member
+     */
+    private String genderConvertor() {
+        String gender;
+        gender = switch (GENDER) {
+            case 'M' -> "Male";
+            case 'F' -> "Female";
+            default -> "Unknown";
+        };
+
+        return gender;
+    }
+
+    /**
+     * Returns age of the member.
+     *
+     * @return the age of the member
+     */
+    private String ageConvertor() {
+        return age == null ? "Unknown" : String.valueOf(age);
     }
 
     /**
@@ -148,17 +121,17 @@ public class Member {
      * @return true if the book was successfully borrowed, false otherwise
      */
     public boolean borrowBook(Book book) {
-        if (book.getBorrower() != null || book.getBorrowStatus() != BorrowStatus.AVAILABLE || borrowedBooks.size() >= MAX_BORROWED_BOOKS) {
+        if (book.getBorrower() != null || book.getBorrowStatus() != BorrowStatus.AVAILABLE || BORROWED_BOOKS.size() >= MAX_BORROWED_BOOKS) {
             return false;
         }
 
-        for (Book borrowedBook : borrowedBooks) {
+        for (Book borrowedBook : BORROWED_BOOKS) {
             if (borrowedBook.getBorrowStatus() == BorrowStatus.EXPIRED) {
                 return false;
             }
         }
 
-        borrowedBooks.add(book); // Add the book to the member's borrowed books
+        BORROWED_BOOKS.add(book); // Add the book to the member's borrowed books
         book.setBorrower(this); // Set the book's borrower to the member
         book.setBorrowStatus(BorrowStatus.BORROWED); // Set the book's borrow status to BORROWED
         book.setBorrowedTime(System.currentTimeMillis()); // Set the book's borrowed time to the current time
@@ -172,11 +145,11 @@ public class Member {
      * @return true if the book was successfully returned, false otherwise
      */
     public boolean returnBook(Book book) {
-        if (book.getBorrower() != this || book.getBorrowStatus() != BorrowStatus.BORROWED || !borrowedBooks.contains(book)) {
+        if (book.getBorrower() != this || book.getBorrowStatus() != BorrowStatus.BORROWED || !BORROWED_BOOKS.contains(book)) {
             return false;
         }
 
-        borrowedBooks.remove(book); // Remove the book from the member's borrowed books
+        BORROWED_BOOKS.remove(book); // Remove the book from the member's borrowed books
         book.setBorrower(null); // Set the book's borrower to null
         book.setBorrowStatus(BorrowStatus.AVAILABLE); // Set the book's borrow status to AVAILABLE
         book.setBorrowedTime(0); // Reset the book's borrowed time

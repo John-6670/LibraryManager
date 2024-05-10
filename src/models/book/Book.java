@@ -1,6 +1,7 @@
 package models.book;
 
 import models.member.Member;
+import models.base.LibraryItem;
 
 /**
  * Represents a book in the library.
@@ -9,14 +10,11 @@ import models.member.Member;
  *
  * @author John
  */
-public class Book {
-    private static int nextBookID = 2024_03_06; // Static variable to hold the next book ID
-    private static final int allowedBorrowTime = 120_000; // Time in ms
+public class Book extends LibraryItem {
+    private static final int ALLOWED_BORROW_TIME = 120_000; // Time in ms
     private BorrowStatus borrowStatus = BorrowStatus.AVAILABLE; // Enum to hold the borrow status of the book
-    private final int bookID;
-    private String title;
     private String author;
-    private final Genre genre;
+    private final Genre GENRE;
     private Member borrower = null;
     private long borrowedTime;
 
@@ -29,42 +27,12 @@ public class Book {
      * @param genre  the genre of the book
      */
     public Book(String title, String author, Genre genre) {
-        this.title = title;
+        super(title);
         this.author = author;
-        this.genre = genre;
-        this.bookID = nextBookID++;
+        this.GENRE = genre;
     }
 
     // Getters and Setters
-
-    /**
-     * Returns the ID of the book.
-     *
-     * @return the book's ID
-     */
-    public int getBookID() {
-        return bookID;
-    }
-
-
-    /**
-     * Returns the title of the book.
-     *
-     * @return the book's title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Sets the title of the book.
-     *
-     * @param title the new title of the book
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     /**
      * Returns the author of the book.
      *
@@ -89,7 +57,7 @@ public class Book {
      * @return the book's genre
      */
     public Genre getGenre() {
-        return genre;
+        return GENRE;
     }
 
     /**
@@ -118,7 +86,7 @@ public class Book {
     public long getRemainAllowedTime() {
         if (borrowStatus == BorrowStatus.BORROWED) {
             long currentTime = System.currentTimeMillis();
-            return allowedBorrowTime - (currentTime - borrowedTime);
+            return ALLOWED_BORROW_TIME - (currentTime - borrowedTime);
         }
 
         return 120_000;
@@ -157,9 +125,10 @@ public class Book {
      *
      * @return a formatted string representation of the book for table display
      */
+    @Override
     public String toStringTable() {
-        String borrowerId = (borrower != null) ? String.valueOf(borrower.getMemberID()) : "None";
-        return String.format("| %-8s | %-18s | %-13s | %-15s | %-13s | %-13s |", bookID, title, author, genre, borrowStatus, borrowerId);
+        String borrowerId = (borrower != null) ? String.valueOf(borrower.getID()) : "None";
+        return String.format("| %-8s | %-18s | %-13s | %-15s | %-13s | %-13s |", ID, name, author, GENRE, borrowStatus, borrowerId);
     }
 
     /**
@@ -171,7 +140,7 @@ public class Book {
     public String toString() {
         String borrower = this.borrower == null ? "No one" : this.borrower.getName();
 
-        return "Book { Book ID: " + bookID + ", Title: " + title + ", Author: " + author + ", Genre: " + genre +
+        return "Book { Book ID: " + ID + ", Title: " + name + ", Author: " + author + ", Genre: " + GENRE +
                 ", Borrow Status: " + borrowStatus + ", Borrower: " + borrower + " }";
     }
 }

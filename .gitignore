@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 .idea/
 javadoc/
+UML/
 
 ### Eclipse ###
 .apt_generated

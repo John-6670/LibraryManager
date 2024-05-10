@@ -132,8 +132,13 @@ public class Member {
                     "borrowedBooks: None }";
         }
 
+        ArrayList<String> borrowedBooksNames = new ArrayList<>();
+        for (Book book : borrowedBooks) {
+            borrowedBooksNames.add(book.getTitle() + "By: " + book.getAuthor());
+        }
+
         return "Member { memberID: " + memberID + ", name: '" + name + "', " + "age: " + age + ", gender: '" + gender + "', " +
-                "borrowedBooks: " + borrowedBooks + " }";
+                "borrowedBooks: " + borrowedBooksNames + " }";
     }
 
     /**

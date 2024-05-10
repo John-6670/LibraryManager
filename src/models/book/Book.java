@@ -14,8 +14,8 @@ public class Book {
     private static final int allowedBorrowTime = 120_000; // Time in ms
     private BorrowStatus borrowStatus = BorrowStatus.AVAILABLE; // Enum to hold the borrow status of the book
     private final int bookID;
-    private final String title;
-    private final String author;
+    private String title;
+    private String author;
     private final Genre genre;
     private Member borrower = null;
     private long borrowedTime;
@@ -46,6 +46,7 @@ public class Book {
         return bookID;
     }
 
+
     /**
      * Returns the title of the book.
      *
@@ -56,12 +57,30 @@ public class Book {
     }
 
     /**
+     * Sets the title of the book.
+     *
+     * @param title the new title of the book
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
      * Returns the author of the book.
      *
      * @return the book's author
      */
     public String getAuthor() {
         return author;
+    }
+
+    /**
+     * Sets the author of the book.
+     *
+     * @param author the new author of the book
+     */
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     /**

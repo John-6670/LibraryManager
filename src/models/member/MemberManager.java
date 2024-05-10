@@ -2,6 +2,7 @@ package models.member;
 
 import models.book.*;
 import models.console.*;
+import models.base.Manager;
 
 import java.util.ArrayList;
 
@@ -12,15 +13,15 @@ import java.util.ArrayList;
  *
  * @author John
  */
-public class MemberManager{
+public class MemberManager implements Manager{
     private final ArrayList<Member> members; // Create an ArrayList to hold members
     private static final String[] menuItems = new String[] {
             "Add Member",
-            "Update Member",
-            "Delete Member",
-            "Display Member Details",
-            "Search Member by Name",
             "Display all Members",
+            "Update Member",
+            "Search Member by Name",
+            "Display Member Details",
+            "Delete Member",
             "Go back"
     }; // Menu items
 
@@ -46,36 +47,36 @@ public class MemberManager{
 
             switch (choice) {
                 case 1:
-                    addMember();
+                    add();
                     break;
 
                 case 2:
-                    System.out.print("Enter member ID: ");
-                    int memberID = Input.scan.nextInt();
-                    updateMember(memberID);
+                    list();
                     break;
 
                 case 3:
                     System.out.print("Enter member ID: ");
-                    memberID = Input.scan.nextInt();
-                    members.removeIf(member -> member.getMemberID() == memberID);
+                    int memberID = Input.scan.nextInt();
+                    update(memberID);
                     break;
 
                 case 4:
+                    System.out.print("Enter member name: ");
+                    Input.scan.nextLine(); // Consume the newline character
+                    String name = Input.scan.nextLine();
+                    search(name);
+                    break;
+
+                case 5:
                     System.out.print("Enter member ID: ");
                     memberID = Input.scan.nextInt();
                     displayMemberDetails(memberID);
                     break;
 
-                case 5:
-                    System.out.print("Enter member name: ");
-                    Input.scan.nextLine(); // Consume the newline character
-                    String name = Input.scan.nextLine();
-                    searchMemberByName(name);
-                    break;
-
                 case 6:
-                    displayAllMembers();
+                    System.out.print("Enter member ID: ");
+                    memberID = Input.scan.nextInt();
+                    delete(memberID);
                     break;
 
                 case 7:
@@ -97,7 +98,8 @@ public class MemberManager{
      * Adds a new member to the library.
      * Prompts the user for the member's details and creates a new Member object.
      */
-    private void addMember() {
+    @Override
+    public void add() {
         System.out.print("Enter member name: ");
         Input.scan.nextLine(); // Consume the newline character
         String name = Input.scan.nextLine(); // Read the member name
@@ -120,12 +122,26 @@ public class MemberManager{
     }
 
     /**
+     * Displays the details of all members.
+     */
+    @Override
+    public void list() {
+        System.out.printf ("| %-9s | %-18s | %-7s | %-7s | %-24s |\n", "Member ID", "Name", "Age", "Gender", "Number of borrowed books");
+        System.out.println("|-----------|--------------------|---------|---------|--------------------------|");
+
+        for (Member member : members) {
+            System.out.println(member.toStringTable());
+        }
+    }
+
+    /**
      * Updates a member's details.
      * Prompts the user for the new details and updates the Member object.
      *
      * @param memberID The ID of the member to be updated.
      */
-    private void updateMember(int memberID) {
+    @Override
+    public void update(int memberID) {
         Member member = searchMemberByID(memberID); // Search for the member
         
         if (member == null) {
@@ -151,29 +167,13 @@ public class MemberManager{
     }
 
     /**
-     * Displays a member's details.
-     * Searches for the member by their ID and prints their details.
-     *
-     * @param memberID The ID of the member whose details are to be displayed.
-     */
-    private void displayMemberDetails(int memberID) {
-        Member member = searchMemberByID(memberID); // Search for the member
-
-        if (member == null) {
-            System.err.println("Member not found");
-            return;
-        }
-
-        System.out.println(member); // Display the member details
-    }
-
-    /**
      * Searches for a member by their name.
      * Prints the details of all members whose names contain the given name.
      *
      * @param name The name to search for.
      */
-    private void searchMemberByName(String name) {
+    @Override
+    public void search(String name) {
         ArrayList<Member> searchResult = new ArrayList<>(); // Create an ArrayList to hold search results
 
         for (Member member : members) {
@@ -193,15 +193,31 @@ public class MemberManager{
     }
 
     /**
-     * Displays the details of all members.
+     * Deletes a member from the library.
+     * Searches for the member by their ID and removes them from the list of members.
+     *
+     * @param memberID The ID of the member to be deleted.
      */
-    private void displayAllMembers() {
-        System.out.printf ("| %-9s | %-18s | %-7s | %-7s | %-24s |\n", "Member ID", "Name", "Age", "Gender", "Number of borrowed books");
-        System.out.println("|-----------|--------------------|---------|---------|--------------------------|");
+    @Override
+    public void delete(int memberID) {
+        members.removeIf(member -> member.getMemberID() == memberID); // Remove the member from the list
+    }
 
-        for (Member member : members) {
-            System.out.println(member.toStringTable());
+    /**
+     * Displays a member's details.
+     * Searches for the member by their ID and prints their details.
+     *
+     * @param memberID The ID of the member whose details are to be displayed.
+     */
+    private void displayMemberDetails(int memberID) {
+        Member member = searchMemberByID(memberID); // Search for the member
+
+        if (member == null) {
+            System.err.println("Member not found");
+            return;
         }
+
+        System.out.println(member); // Display the member details
     }
 
     /**
@@ -249,7 +265,7 @@ public class MemberManager{
      */
     public void borrowBook(BookManager bookManager, int memberID, int bookID) {
         Member member = searchMemberByID(memberID); // Search for the member
-        Book book = bookManager.searchBookByID(bookID); // Search for the book
+        Book book = bookManager.searchByID(bookID); // Search for the book
 
         if (member == null) {
             System.err.println("Member not found");
@@ -285,7 +301,7 @@ public class MemberManager{
      */
     public void returnBook(BookManager bookManager, int memberID, int bookID) {
         Member member = searchMemberByID(memberID); // Search for the member
-        Book book = bookManager.searchBookByID(bookID); // Search for the book
+        Book book = bookManager.searchByID(bookID); // Search for the book
 
         if (member == null) {
             System.err.println("Member not found");
